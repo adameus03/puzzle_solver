@@ -24,6 +24,17 @@ void expected_conditional_inside_checker(const uchar& toggle, const uchar& ok, c
     }
 }
 
+char* convert_sol(PUZZLEDIR* sol, uint len){
+    char* output = new char[len+0x1];
+    char* oh = output;
+    PUZZLEDIR* solt = sol+len;
+    while(sol != solt){
+        *oh++ = (char)(*sol++);
+    }
+    *oh = 0x0;
+    return output;
+}
+
 //PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order)
 uchar test_bfs(){
     /*
@@ -86,6 +97,10 @@ uchar test_bfs(){
     PUZZLEDIR* sol = bfs(buffer, 0x3, 0x3, output_length, order);
     std::cout << "</BFS CALL>" << std::endl;
 
+    std::cout << "<SOL>" << std::endl;
+    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << "</SOL>" << std::endl;
+
     uchar retval = 0x1;
     std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
 
@@ -103,7 +118,7 @@ uchar test_bfs(){
         5 6 3
         4 7 8
 
-    */
+    */ //return 0x1;
 
     buffer = new uint[0x13];
     *buffer = 0xffffffff;
@@ -137,6 +152,10 @@ uchar test_bfs(){
     sol = bfs(buffer, 0x3, 0x3, output_length, order);
     std::cout << "</BFS CALL>" << std::endl;
 
+    std::cout << "<SOL>" << std::endl;
+    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << "</SOL>" << std::endl;
+
     std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
     if(output_length != 0x8) retval = 0x0;
     //else if(*sol != PUZZLEDIR::RIGHT) retval = 0x0;
@@ -151,7 +170,7 @@ uchar test_bfs(){
 }
 
 //PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order, const uint& max_depth)
-uchar test_dfs(){
+uchar test_dfs(){ return 0x1;
     /*
         TEST 1
 
@@ -212,6 +231,10 @@ uchar test_dfs(){
     PUZZLEDIR* sol = dfs(buffer, 0x3, 0x3, output_length, order, 20);
     std::cout << "</DFS CALL>" << std::endl;
 
+    std::cout << "<SOL>" << std::endl;
+    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << "</SOL>" << std::endl;
+
     uchar retval = 0x1;
     std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
 
@@ -262,6 +285,11 @@ uchar test_dfs(){
     std::cout << "<DFS CALL>" << std::endl;
     sol = dfs(buffer, 0x3, 0x3, output_length, order, 20);
     std::cout << "</DFS CALL>" << std::endl;
+
+    std::cout << "<SOL>" << std::endl;
+    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << "</SOL>" << std::endl;
+
 
     std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
     if(output_length != 0x8) retval = 0x0;

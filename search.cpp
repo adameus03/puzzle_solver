@@ -318,13 +318,16 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
     small_node* head = &root;
 
+    std::cout << "  <while(0x1)>" << std::endl;
     while(0x1){
+        ///std::cout << "      <condition(head->op<0x4)>" << std::endl;
         if(head->op < 0x4){ //branch (if possible)
             uint* target = hole + *(enhanced_order+(head->op));
             if(*target == 0xffffffff){
                 (head->op)++;
                 continue;
             }
+            //std::cout << "BRANCH" << std::endl;
             //update buffer, depth and hole
             *hole = *target;
             *target = 0x0;
@@ -350,6 +353,7 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
             }
         }
         else {
+            //std::cout << "RETURN" << std::endl;
             // go to origin after undo move
             if(head->origin){
                 //update buffer, depth and hole
@@ -367,7 +371,9 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
                 return NULL;
             }
         }
+        ///std::cout << "      </condition(head->op<0x4)>" << std::endl;
     }
+    std::cout << "  </while(0x1)>" << std::endl;
 
     PUZZLEDIR* sol = new PUZZLEDIR[depth];
     PUZZLEDIR* solh = sol+depth-0x1;
@@ -382,5 +388,23 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
 
     return sol;
+
+}
+
+struct astr_node {
+    astr_node* origin = NULL;
+    PUZZLEDIR* direction;
+};
+
+/*ull hamm(uint* buffer, const uint& a, const uint& b){
+    uint output = 0x0;
+    for(uint i=0x0; i<a*b; i++){
+        if(*buffer) output += (*buffer != i+1);
+        buffer++;
+    }
+    return output-a-0x1;
+}*/
+
+PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length, METRIC metric){
 
 }

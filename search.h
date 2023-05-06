@@ -11,6 +11,11 @@ enum PUZZLEDIR {
     DOWN = 'D'
 };
 
+enum METRIC {
+    MANHATTAN,
+    HAMMING
+};
+
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned long long ull;
