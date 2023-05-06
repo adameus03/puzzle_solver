@@ -104,7 +104,7 @@ uint* zero(uint* buffer, const size_t& len){
     @param buffer
         Row-MAXINT-separated buffer of tiles
 */
-PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order){
+PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order){/* Todo: Terminate if sol not found*/
 
     if(final_predicate(buffer, a, b)){
         output_length = 0x0;
@@ -265,27 +265,28 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
 }
 
+struct small_node {
+    small_node* origin = NULL;
+    PUZZLEDIR* direction;
+    uchar op = 0x0;
+};
 
-PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order){
+
+PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order, const uint& max_depth){
     if(final_predicate(buffer, a, b)){
         output_length = 0x0;
         return NULL;
     }
     //uint* bh = buffer;
     size_t bl = (a+0x2)*(b+0x1);
-    size_t bls = bl*sizeof(uint);
+    //size_t bls = bl*sizeof(uint);
     //uint* bt = buffer+bl;
 
 
-    node root;
-    root.origin = NULL;
-    root.state = new uint[bl];
-    memcpy(root.state, buffer, bls);
-    root.hole = zero(root.state, bl);
-
+    small_node root;
 
     PUZZLEDIR* orderh = order;
-    PUZZLEDIR* ordert = order+0x4;
+    //PUZZLEDIR* ordert = order+0x4;
 
     std::cout << "  <enhanced_order mem alloc>" << std::endl;
     int* enhanced_order = new int[0x4];
@@ -311,6 +312,75 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
         //enhanced_order++;
     }
 
-    return NULL;
+
+    uint depth = 0x0;
+    uint* hole = zero(buffer, bl);
+
+    small_node* head = &root;
+
+    while(0x1){
+        if(head->op < 0x4){ //branch (if possible)
+            uint* target = hole + *(enhanced_order+(head->op));
+            if(*target == 0xffffffff){
+                (head->op)++;
+                continue;
+            }
+            //update buffer, depth and hole
+            *hole = *target;
+            *target = 0x0;
+            hole = target;
+            depth++;
+
+            //configure new node
+            small_node* new_node = new small_node;
+            new_node->origin = head;
+            new_node->direction = order+(head->op);
+
+            (head->op)++;
+
+            head = new_node;
+
+            //check depth, check final_predicate
+            if(depth >= max_depth){
+                head->op = 0x4;
+            }
+            if(final_predicate(buffer, a, b)){
+                //do stuff
+                break;
+            }
+        }
+        else {
+            // go to origin after undo move
+            if(head->origin){
+                //update buffer, depth and hole
+                uint* target = hole - *(enhanced_order+((head->direction)-order));
+                *hole = *target;
+                *target = 0x0;
+                hole = target;
+                depth--;
+
+                // return to origin
+                head = head->origin;
+            }
+            else { // solution not found
+                output_length = 0x0;
+                return NULL;
+            }
+        }
+    }
+
+    PUZZLEDIR* sol = new PUZZLEDIR[depth];
+    PUZZLEDIR* solh = sol+depth-0x1;
+    PUZZLEDIR* solt = sol-0x1;
+
+    while(solh != solt){
+        *solh-- = *(head->direction);
+        head = head->origin;
+    }
+
+    output_length = depth;
+
+
+    return sol;
 
 }

@@ -17,4 +17,6 @@ typedef unsigned long long ull;
 
 PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order);
 
+PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order, const uint& max_depth);
+
 #endif // SEARCH_H_INCLUDED

@@ -17,5 +17,7 @@ void expected_conditional_inside_checker(const uchar& toggle, const uchar& ok, c
 
 uchar test_bfs();
 
+uchar test_dfs();
+
 
 #endif // TESTS_H_INCLUDED
