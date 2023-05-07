@@ -1,5 +1,6 @@
 #include <iostream>
 #include "search.h"
+#include "convert.h"
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -25,7 +26,7 @@ void expected_conditional_inside_checker(const uchar& toggle, const uchar& ok, c
     }
 }
 
-char* convert_sol(PUZZLEDIR* sol, uint len){
+/*char* convert_sol(PUZZLEDIR* sol, uint len){
     char* output = new char[len+0x1];
     char* oh = output;
     PUZZLEDIR* solt = sol+len;
@@ -34,7 +35,7 @@ char* convert_sol(PUZZLEDIR* sol, uint len){
     }
     *oh = 0x0;
     return output;
-}
+}*/
 
 //PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order)
 uchar test_bfs(){

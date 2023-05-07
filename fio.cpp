@@ -19,6 +19,7 @@ uint* load_puzzle (const char* source_path, uint& a, uint& b){
     }
 
     std::string line;
+    std::getline(f_in, line);
     for(uint i=0x0; i<a; i++){
         *head++ = 0xffffffff;
         std::getline(f_in, line);

@@ -2,6 +2,8 @@
 #define TESTS_H_INCLUDED
 
 #include <iostream>
+#include "search.h"
+#include "convert.h"
 
 typedef unsigned char uchar;
 
