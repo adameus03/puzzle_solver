@@ -28,6 +28,8 @@ ull hamm(uint* buffer, const uint& a, const uint& b);
 
 ull manh(uint* buffer, const uint& a, const uint& b);
 
+PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length, METRIC metric, const uint& max_depth);
+
 
 
 #endif // SEARCH_H_INCLUDED

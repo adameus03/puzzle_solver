@@ -15,5 +15,7 @@ int main()
 
     checker(test_manh(), "manh");
 
+    checker(test_astr(), "astr");
+
     return 0;
 }

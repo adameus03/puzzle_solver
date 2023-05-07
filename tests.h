@@ -23,5 +23,7 @@ uchar test_hamm();
 
 uchar test_manh();
 
+uchar test_astr();
+
 
 #endif // TESTS_H_INCLUDED

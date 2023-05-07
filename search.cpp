@@ -122,12 +122,12 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
     memcpy(root.state, buffer, bls);
     root.hole = zero(root.state, bl);
 
-    std::cout << "  <layer mem alloc>" << std::endl;
+    ///std::cout << "  <layer mem alloc>" << std::endl;
     pnode* layer = new pnode[0x10000000]; // 2^28-1
-    std::cout << "  </layer mem alloc>" << std::endl;
-    std::cout << "  <_layer mem alloc>" << std::endl;
+    ///std::cout << "  </layer mem alloc>" << std::endl;
+    ///std::cout << "  <_layer mem alloc>" << std::endl;
     pnode* _layer = new pnode[0x10000000]; // 2^28-1
-    std::cout << "  </_layer mem alloc>" << std::endl;
+    ///std::cout << "  </_layer mem alloc>" << std::endl;
 
 
     pnode* lh = layer;
@@ -138,9 +138,9 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
     PUZZLEDIR* orderh = order;
     PUZZLEDIR* ordert = order+0x4;
 
-    std::cout << "  <enhanced_order mem alloc>" << std::endl;
+    ///std::cout << "  <enhanced_order mem alloc>" << std::endl;
     int* enhanced_order = new int[0x4];
-    std::cout << "  </enhanced_order mem alloc>" << std::endl;
+    ///std::cout << "  </enhanced_order mem alloc>" << std::endl;
     int* enhanced_orderh = enhanced_order;
     int* enhanced_ordert = enhanced_order+0x4;
 
@@ -167,31 +167,31 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
     //pnode* _lh = lt;
 
-    std::cout << "  <while(0x1)>" << std::endl;
+    ///std::cout << "  <while(0x1)>" << std::endl;
     while(0x1){
         lh = layer;
         _lh = _layer;
         depth++;
 
-        std::cout << "      <while(lh != lt)>" << std::endl;
+        ///std::cout << "      <while(lh != lt)>" << std::endl;
         while(lh != lt){
 
             orderh = order;
             enhanced_orderh = enhanced_order;
 
             //IDEa: layer a, layer b
-            std::cout << "          <while(orderh != ordert)>" << std::endl;
+            ///std::cout << "          <while(orderh != ordert)>" << std::endl;
             while(orderh != ordert){
                 //(*lh)->tile
 
                 // SWAP TILES, be careful with the above
                 uint* target = ((*lh)->hole) + *enhanced_orderh;
-                std::cout << "              <if(*target != 0xffffffff)>" << std::endl;
+                ///std::cout << "              <if(*target != 0xffffffff)>" << std::endl;
                 if(*target != 0xffffffff){
                     //_lh - Idea: layer b head?
-                    std::cout << "                  <*_lh mem alloc>" << std::endl;
+                    ///std::cout << "                  <*_lh mem alloc>" << std::endl;
                     *_lh = new node;
-                    std::cout << "                  </*_lh mem alloc>" << std::endl;
+                    ///std::cout << "                  </*_lh mem alloc>" << std::endl;
                     (*_lh)->direction = *orderh;
                     (*_lh)->origin = *lh;
                     (*_lh)->state = new uint[bl];
@@ -214,26 +214,26 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
                     _lh++;
                 }
-                std::cout << "              </if(*target != 0xffffffff)>" << std::endl;
+                ///std::cout << "              </if(*target != 0xffffffff)>" << std::endl;
 
                 orderh++;
                 enhanced_orderh++;
             }
-            std::cout << "          </while(orderh != ordert)>" << std::endl;
+            ///std::cout << "          </while(orderh != ordert)>" << std::endl;
             lh++;
         }
-        std::cout << "      </while(lh != lt)>" << std::endl;
+        ///std::cout << "      </while(lh != lt)>" << std::endl;
 
 
         memcpy(layer, _layer, (_lh-_layer)*sizeof(node));
 
         lt = layer+(_lh-_layer);
     }
-    std::cout << "  </while(0x1)>" << std::endl;
+    ///std::cout << "  </while(0x1)>" << std::endl;
 
     after_loop:
 
-    std::cout << "  <after loop/>" << std::endl;
+    ///std::cout << "  <after loop/>" << std::endl;
 
 
 
@@ -288,9 +288,9 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
     PUZZLEDIR* orderh = order;
     //PUZZLEDIR* ordert = order+0x4;
 
-    std::cout << "  <enhanced_order mem alloc>" << std::endl;
+    ///std::cout << "  <enhanced_order mem alloc>" << std::endl;
     int* enhanced_order = new int[0x4];
-    std::cout << "  </enhanced_order mem alloc>" << std::endl;
+    ///std::cout << "  </enhanced_order mem alloc>" << std::endl;
     int* enhanced_orderh = enhanced_order;
     int* enhanced_ordert = enhanced_order+0x4;
 
@@ -318,7 +318,7 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
     small_node* head = &root;
 
-    std::cout << "  <while(0x1)>" << std::endl;
+    ///std::cout << "  <while(0x1)>" << std::endl;
     while(0x1){
         ///std::cout << "      <condition(head->op<0x4)>" << std::endl;
         if(head->op < 0x4){ //branch (if possible)
@@ -373,7 +373,7 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
         }
         ///std::cout << "      </condition(head->op<0x4)>" << std::endl;
     }
-    std::cout << "  </while(0x1)>" << std::endl;
+    ///std::cout << "  </while(0x1)>" << std::endl;
 
     PUZZLEDIR* sol = new PUZZLEDIR[depth];
     PUZZLEDIR* solh = sol+depth-0x1;
@@ -397,10 +397,10 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 };*/
 
 struct astr_node {
-    small_node* origin = NULL;
+    astr_node* origin = NULL;
     PUZZLEDIR* direction;
     uchar op = 0x0;
-    PUZZLEDIR* order;
+    ull* metrics = NULL;
 };
 
 ull hamm(uint* buffer, const uint& a, const uint& b){
@@ -478,7 +478,7 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
     }
     //uint* bh = buffer;
     size_t bl = (a+0x2)*(b+0x1);
-    size_t bls = bl*sizeof(uint);
+    //size_t bls = bl*sizeof(uint);
     //uint* bt = buffer+bl;
 
 
@@ -486,8 +486,8 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
     /* CHANGES */
 
     PUZZLEDIR* dirs = new PUZZLEDIR[0x4];
-    PUZZLEDIR* dirsh;
-    PUZZLEDIR* dirst = dirs+0x4;
+    //PUZZLEDIR* dirsh;
+    //PUZZLEDIR* dirst = dirs+0x4;
     *dirs = PUZZLEDIR::LEFT;
     *(dirs+0x1) = PUZZLEDIR::DOWN;
     *(dirs+0x2) = PUZZLEDIR::RIGHT;
@@ -495,11 +495,11 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
 
     //PUZZLEDIR* ordert = order+0x4;
 
-    std::cout << "  <enhanced_dirs mem alloc>" << std::endl;
+    ///std::cout << "  <enhanced_dirs mem alloc>" << std::endl;
     int* enhanced_dirs = new int[0x4];
     int* enhanced_dirsh;
     int* enhanced_dirst = enhanced_dirs+0x4;
-    std::cout << "  </enhanced_dirs mem alloc>" << std::endl;
+    ///std::cout << "  </enhanced_dirs mem alloc>" << std::endl;
     *enhanced_dirs = -1;
     *(enhanced_dirs+0x1) = b+1;
     *(enhanced_dirs+0x2) = 1;
@@ -514,14 +514,13 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
     /*//temp buffer for comparing with the actual buffer
     uint* _buffer = new uint[bl];*/
 
-    std::cout << "  <while(0x1)>" << std::endl;
+    ///std::cout << "  <while(0x1)>" << std::endl;
     while(0x1){
         ///std::cout << "      <condition(head->op<0x4)>" << std::endl;
-        if(!(head->op)){ //initialize order according to priority determined by heuristics
-            /*memcpy(_buffer, buffer, bls);*/
+        if(!(head->op)){ // calculate metrics
             ull* scores = new ull[0x4];
             ull* scoresh = scores;
-            ull* scorest = scores+0x4;
+            //ull* scorest = scores+0x4;
 
             enhanced_dirsh = enhanced_dirs;
             while(enhanced_dirsh != enhanced_dirst){
@@ -546,19 +545,24 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
                 enhanced_dirsh++;
                 scoresh++;
             }
+            head->metrics = scores;
+        }
+
+        if(head->op < 0x4){ //branch (if possible)
             // min
-            ull* minscore = scores;
-            scoresh = scores+0x1;
+            ull* minscore = head->metrics;
+            ull* scoresh = (head->metrics)+0x1;
+            ull* scorest = (head->metrics)+0x4;
             while(scoresh != scorest){
                 if(*scoresh < *minscore){
                     minscore = scoresh;
                 }
                 scoresh++;
             }
+            *minscore = 0xffffffffffffffff;
 
-        }
-        if(head->op < 0x4){ //branch (if possible)
-            uint* target = hole + *(enhanced_order+(head->op));
+            // WHEN NEXT ORDER ELEM KNOWN
+            uint* target = hole + *(enhanced_dirs+(minscore-(head->metrics)));
             if(*target == 0xffffffff){
                 (head->op)++;
                 continue;
@@ -571,9 +575,9 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
             depth++;
 
             //configure new node
-            small_node* new_node = new small_node;
+            astr_node* new_node = new astr_node;
             new_node->origin = head;
-            new_node->direction = order+(head->op);
+            new_node->direction = dirs+(minscore-(head->metrics));
 
             (head->op)++;
 
@@ -593,7 +597,7 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
             // go to origin after undo move
             if(head->origin){
                 //update buffer, depth and hole
-                uint* target = hole - *(enhanced_order+((head->direction)-order));
+                uint* target = hole - *(enhanced_dirs+((head->direction)-dirs));
                 *hole = *target;
                 *target = 0x0;
                 hole = target;
@@ -609,7 +613,7 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
         }
         ///std::cout << "      </condition(head->op<0x4)>" << std::endl;
     }
-    std::cout << "  </while(0x1)>" << std::endl;
+    ///std::cout << "  </while(0x1)>" << std::endl;
 
     PUZZLEDIR* sol = new PUZZLEDIR[depth];
     PUZZLEDIR* solh = sol+depth-0x1;
