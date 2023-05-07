@@ -88,25 +88,26 @@ uchar test_bfs(){
     *(buffer+0x12) = 0xffffffff;*/
 
 
-    uint output_length;
+    //uint output_length;
     PUZZLEDIR* order = new PUZZLEDIR[0x4];
     *order = PUZZLEDIR::LEFT;
     *(order+0x1) = PUZZLEDIR::DOWN;
     *(order+0x2) = PUZZLEDIR::RIGHT;
     *(order+0x3) = PUZZLEDIR::UP;
 
+    searchstat stats;
     std::cout << "<BFS CALL>" << std::endl;
-    PUZZLEDIR* sol = bfs(buffer, 0x3, 0x3, output_length, order);
+    PUZZLEDIR* sol = bfs(buffer, 0x3, 0x3, order, 20, stats);
     std::cout << "</BFS CALL>" << std::endl;
 
     std::cout << "<SOL>" << std::endl;
-    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << convert_sol(sol, stats.solution_length) << std::endl;
     std::cout << "</SOL>" << std::endl;
 
     uchar retval = 0x1;
-    std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
+    std::cout << "<output_length>" << stats.solution_length << "</output_length>" << std::endl;
 
-    if(output_length != 0x1) retval = 0x0;
+    if(/*output_length*/stats.solution_length != 0x1) retval = 0x0;
     else if(*sol != PUZZLEDIR::RIGHT) retval = 0x0;
     /*if(output_length != 0x8) retval = 0x0;*/
 
@@ -143,23 +144,24 @@ uchar test_bfs(){
     *(buffer+0x11) = 0xffffffff;
     *(buffer+0x12) = 0xffffffff;
 
-    output_length = 0x0;
+    //output_length = 0x0;
     order = new PUZZLEDIR[0x4];
     *order = PUZZLEDIR::LEFT;
     *(order+0x1) = PUZZLEDIR::DOWN;
     *(order+0x2) = PUZZLEDIR::RIGHT;
     *(order+0x3) = PUZZLEDIR::UP;
 
+    //searchstat stats;
     std::cout << "<BFS CALL>" << std::endl;
-    sol = bfs(buffer, 0x3, 0x3, output_length, order);
+    sol = bfs(buffer, 0x3, 0x3/*, output_length*/, order, 20, stats);
     std::cout << "</BFS CALL>" << std::endl;
 
     std::cout << "<SOL>" << std::endl;
-    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << convert_sol(sol, stats.solution_length) << std::endl;
     std::cout << "</SOL>" << std::endl;
 
-    std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
-    if(output_length != 0x8) retval = 0x0;
+    std::cout << "<output_length>" << stats.solution_length << "</output_length>" << std::endl;
+    if(stats.solution_length != 0x8) retval = 0x0;
     //else if(*sol != PUZZLEDIR::RIGHT) retval = 0x0;
 
     delete[] buffer;
@@ -222,23 +224,24 @@ uchar test_dfs(){ //return 0x1;
     *(buffer+0x12) = 0xffffffff;*/
 
 
-    uint output_length;
+    //uint output_length;
     PUZZLEDIR* order = new PUZZLEDIR[0x4];
     *order = PUZZLEDIR::LEFT;
     *(order+0x1) = PUZZLEDIR::DOWN;
     *(order+0x2) = PUZZLEDIR::RIGHT;
     *(order+0x3) = PUZZLEDIR::UP;
 
+    searchstat stats;
     std::cout << "<DFS CALL>" << std::endl;
-    PUZZLEDIR* sol = dfs(buffer, 0x3, 0x3, output_length, order, 20);
+    PUZZLEDIR* sol = dfs(buffer, 0x3, 0x3, order, 20, stats);
     std::cout << "</DFS CALL>" << std::endl;
 
     std::cout << "<SOL>" << std::endl;
-    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << convert_sol(sol, stats.solution_length) << std::endl;
     std::cout << "</SOL>" << std::endl;
 
     uchar retval = 0x1;
-    std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
+    std::cout << "<output_length>" << stats.solution_length << "</output_length>" << std::endl;
 
     ///if(output_length != 0x1) retval = 0x0;
     ///else if(*sol != PUZZLEDIR::RIGHT) retval = 0x0;
@@ -277,23 +280,24 @@ uchar test_dfs(){ //return 0x1;
     *(buffer+0x11) = 0xffffffff;
     *(buffer+0x12) = 0xffffffff;
 
-    output_length = 0x0;
+    //output_length = 0x0;
     order = new PUZZLEDIR[0x4];
     *order = PUZZLEDIR::LEFT;
     *(order+0x1) = PUZZLEDIR::DOWN;
     *(order+0x2) = PUZZLEDIR::RIGHT;
     *(order+0x3) = PUZZLEDIR::UP;
 
+    //searchstat stats;
     std::cout << "<DFS CALL>" << std::endl;
-    sol = dfs(buffer, 0x3, 0x3, output_length, order, 20);
+    sol = dfs(buffer, 0x3, 0x3/*, output_length*/, order, 20, stats);
     std::cout << "</DFS CALL>" << std::endl;
 
     std::cout << "<SOL>" << std::endl;
-    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << convert_sol(sol, stats.solution_length) << std::endl;
     std::cout << "</SOL>" << std::endl;
 
 
-    std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
+    std::cout << "<output_length>" << stats.solution_length << "</output_length>" << std::endl;
     ///if(output_length != 0x8) retval = 0x0;
     //else if(*sol != PUZZLEDIR::RIGHT) retval = 0x0;
 
@@ -421,25 +425,26 @@ uchar test_astr(){
     *(buffer+0x12) = 0xffffffff;*/
 
 
-    uint output_length;
+    //uint output_length;
     PUZZLEDIR* order = new PUZZLEDIR[0x4];
     *order = PUZZLEDIR::LEFT;
     *(order+0x1) = PUZZLEDIR::DOWN;
     *(order+0x2) = PUZZLEDIR::RIGHT;
     *(order+0x3) = PUZZLEDIR::UP;
 
+    searchstat stats;
     std::cout << "<ASTR CALL (HAMM)>" << std::endl;
-    PUZZLEDIR* sol = astr(buffer, 0x3, 0x3, output_length, METRIC::HAMMING, 20);
+    PUZZLEDIR* sol = astr(buffer, 0x3, 0x3/*, output_length*/, METRIC::HAMMING, 20, stats);
     std::cout << "</ASTR CALL (HAMM)>" << std::endl;
 
     std::cout << "<SOL>" << std::endl;
-    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << convert_sol(sol, stats.solution_length) << std::endl;
     std::cout << "</SOL>" << std::endl;
 
     uchar retval = 0x1;
-    std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
+    std::cout << "<output_length>" << stats.solution_length << "</output_length>" << std::endl;
 
-    if(output_length != 0x1) retval = 0x0;
+    if(stats.solution_length != 0x1) retval = 0x0;
     else if(*sol != PUZZLEDIR::RIGHT) retval = 0x0;
     /*if(output_length != 0x8) retval = 0x0;*/
 
@@ -476,24 +481,25 @@ uchar test_astr(){
     *(buffer+0x11) = 0xffffffff;
     *(buffer+0x12) = 0xffffffff;
 
-    output_length = 0x0;
+    //output_length = 0x0;
     order = new PUZZLEDIR[0x4];
     *order = PUZZLEDIR::LEFT;
     *(order+0x1) = PUZZLEDIR::DOWN;
     *(order+0x2) = PUZZLEDIR::RIGHT;
     *(order+0x3) = PUZZLEDIR::UP;
 
+    //searchstat stats;
     std::cout << "<ASTR CALL (MANH)>" << std::endl;
-    sol = astr(buffer, 0x3, 0x3, output_length, METRIC::MANHATTAN, 20);
+    sol = astr(buffer, 0x3, 0x3/*, output_length*/, METRIC::MANHATTAN, 20, stats);
     std::cout << "</ASTR CALL (MANH)>" << std::endl;
 
     std::cout << "<SOL>" << std::endl;
-    std::cout << convert_sol(sol, output_length) << std::endl;
+    std::cout << convert_sol(sol, stats.solution_length) << std::endl;
     std::cout << "</SOL>" << std::endl;
 
 
-    std::cout << "<output_length>" << output_length << "</output_length>" << std::endl;
-    if(output_length != 0x8) retval = 0x0;
+    std::cout << "<output_length>" << stats.solution_length << "</output_length>" << std::endl;
+    if(stats.solution_length != 0x8) retval = 0x0;
     //else if(*sol != PUZZLEDIR::RIGHT) retval = 0x0;
 
     delete[] buffer;

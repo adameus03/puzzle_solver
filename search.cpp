@@ -95,19 +95,33 @@ uint* zero(uint* buffer, const size_t& len){
 }
 
 
+struct searchstat;
 
-
-
+/*
+    struct searchstat {
+        unsigned int solution_length;
+        unsigned long long states_walked;
+        unsigned long long states_processed;
+        unsigned int max_depth;
+        double runtime_ms;
+        unsigned char solution_found;
+    };
+*/
 
 
 /**
     @param buffer
         Row-MAXINT-separated buffer of tiles
 */
-PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order){/* Todo: Terminate if sol not found*/
+PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b/*, uint& output_length*/, PUZZLEDIR* order, const uint& max_depth, searchstat& stats){/* Todo: Terminate if sol not found*/
 
     if(final_predicate(buffer, a, b)){
-        output_length = 0x0;
+        //output_length = 0x0;
+        stats.solution_length = 0x0;
+        stats.states_walked = 0x1;
+        stats.states_processed = 0x0;
+        stats.max_depth = 0x0;
+        stats.solution_found = 0x1;
         return NULL;
     }
     //uint* bh = buffer;
@@ -119,6 +133,10 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
     node root;
     root.origin = NULL;
     root.state = new uint[bl];
+
+    stats.states_walked = 0x1;
+    stats.states_processed = 0x0;
+
     memcpy(root.state, buffer, bls);
     root.hole = zero(root.state, bl);
 
@@ -168,7 +186,7 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
     //pnode* _lh = lt;
 
     ///std::cout << "  <while(0x1)>" << std::endl;
-    while(0x1){
+    while(depth < max_depth){
         lh = layer;
         _lh = _layer;
         depth++;
@@ -195,6 +213,9 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
                     (*_lh)->direction = *orderh;
                     (*_lh)->origin = *lh;
                     (*_lh)->state = new uint[bl];
+
+                    stats.states_walked++;
+
                     memcpy((*_lh)->state, (*lh)->state, bls);
                     //int debug_diff = ((*lh)->hole)-((*lh)->state);
                     (*_lh)->hole = ((*_lh)->state) + (((*lh)->hole)-((*lh)->state));
@@ -219,6 +240,7 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
                 orderh++;
                 enhanced_orderh++;
             }
+            stats.states_processed++;
             ///std::cout << "          </while(orderh != ordert)>" << std::endl;
             lh++;
         }
@@ -230,6 +252,12 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
         lt = layer+(_lh-_layer);
     }
     ///std::cout << "  </while(0x1)>" << std::endl;
+    ///<SOLUTION NOT FOUND>
+    stats.solution_length = 0xffffffff;
+    stats.solution_found = 0x0;
+    stats.max_depth = depth;
+    return NULL;
+    ///</SOLUTION NOT FOUND>
 
     after_loop:
 
@@ -259,7 +287,10 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
 
 
-    output_length = depth;
+    //output_length = depth;
+    stats.solution_length = depth;
+    stats.max_depth = depth;
+    stats.solution_found = 0x1;
     return sol;
 
 
@@ -272,11 +303,18 @@ struct small_node {
 };
 
 
-PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order, const uint& max_depth){
+PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b/*, uint& output_length*/, PUZZLEDIR* order, const uint& max_depth, searchstat& stats){
     if(final_predicate(buffer, a, b)){
-        output_length = 0x0;
+        //output_length = 0x0;
+        stats.solution_length = 0x0;
+        stats.states_walked = 0x1;
+        stats.states_processed = 0x0;
+        stats.max_depth = 0x0;
+        stats.solution_found = 0x1;
+
         return NULL;
     }
+    stats.solution_found = 0x0;
     //uint* bh = buffer;
     size_t bl = (a+0x2)*(b+0x1);
     //size_t bls = bl*sizeof(uint);
@@ -318,6 +356,10 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
     small_node* head = &root;
 
+    stats.states_walked = 0x1;
+    stats.states_processed = 0x0;
+    stats.max_depth = 0x0;
+
     ///std::cout << "  <while(0x1)>" << std::endl;
     while(0x1){
         ///std::cout << "      <condition(head->op<0x4)>" << std::endl;
@@ -333,11 +375,16 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
             *target = 0x0;
             hole = target;
             depth++;
+            if(depth>stats.max_depth){
+                stats.max_depth = depth;
+            }
 
             //configure new node
             small_node* new_node = new small_node;
             new_node->origin = head;
             new_node->direction = order+(head->op);
+
+            stats.states_walked++;
 
             (head->op)++;
 
@@ -349,6 +396,7 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
             }
             if(final_predicate(buffer, a, b)){
                 //do stuff
+                stats.solution_found = 0x1;
                 break;
             }
         }
@@ -356,6 +404,7 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
             //std::cout << "RETURN" << std::endl;
             // go to origin after undo move
             if(head->origin){
+                stats.states_processed++;
                 //update buffer, depth and hole
                 uint* target = hole - *(enhanced_order+((head->direction)-order));
                 *hole = *target;
@@ -367,7 +416,9 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
                 head = head->origin;
             }
             else { // solution not found
-                output_length = 0x0;
+                //output_length = 0x0;
+                stats.solution_found = 0x0;
+                stats.solution_length = 0xffffffff;
                 return NULL;
             }
         }
@@ -384,8 +435,8 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
         head = head->origin;
     }
 
-    output_length = depth;
-
+    //output_length = depth;
+    stats.solution_length = depth;
 
     return sol;
 
@@ -467,13 +518,18 @@ ull manh(uint* buffer, const uint& a, const uint& b){
     return output;
 }
 
-PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length, METRIC metric, const uint& max_depth){
+PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b/*, uint& output_length*/, METRIC metric, const uint& max_depth, searchstat& stats){
     /*astr_node root;
 
     return NULL;*/
 
     if(final_predicate(buffer, a, b)){
-        output_length = 0x0;
+        //output_length = 0x0;
+        stats.max_depth = 0x0;
+        stats.solution_found = 0x1;
+        stats.solution_length = 0x0;
+        stats.states_processed = 0x0;
+        stats.states_walked = 0x1;
         return NULL;
     }
     //uint* bh = buffer;
@@ -509,6 +565,11 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
     uint* hole = zero(buffer, bl);
 
     astr_node* head = &root;
+
+    stats.max_depth = 0x0;
+    stats.solution_found = 0x0;
+    stats.states_processed = 0x0;
+    stats.states_walked = 0x1;
 
 
     /*//temp buffer for comparing with the actual buffer
@@ -573,11 +634,16 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
             *target = 0x0;
             hole = target;
             depth++;
+            if(depth > stats.max_depth){
+                stats.max_depth = depth;
+            }
 
             //configure new node
             astr_node* new_node = new astr_node;
             new_node->origin = head;
             new_node->direction = dirs+(minscore-(head->metrics));
+
+            stats.states_walked++;
 
             (head->op)++;
 
@@ -589,6 +655,7 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
             }
             if(final_predicate(buffer, a, b)){
                 //do stuff
+                stats.solution_found = 0x1;
                 break;
             }
         }
@@ -596,6 +663,7 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
             //std::cout << "RETURN" << std::endl;
             // go to origin after undo move
             if(head->origin){
+                stats.states_processed++;
                 //update buffer, depth and hole
                 uint* target = hole - *(enhanced_dirs+((head->direction)-dirs));
                 *hole = *target;
@@ -607,7 +675,9 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
                 head = head->origin;
             }
             else { // solution not found
-                output_length = 0x0;
+                //output_length = 0x0;
+                stats.solution_found = 0x0;
+                stats.solution_length = 0xffffffff;
                 return NULL;
             }
         }
@@ -624,8 +694,9 @@ PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length,
         head = head->origin;
     }
 
-    output_length = depth;
-
+    //output_length = depth;
+    stats.solution_found = 0x1;
+    stats.solution_length = depth;
 
     return sol;
 }
