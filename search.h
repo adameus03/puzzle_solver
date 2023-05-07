@@ -24,4 +24,10 @@ PUZZLEDIR* bfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
 PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, PUZZLEDIR* order, const uint& max_depth);
 
+ull hamm(uint* buffer, const uint& a, const uint& b);
+
+ull manh(uint* buffer, const uint& a, const uint& b);
+
+
+
 #endif // SEARCH_H_INCLUDED

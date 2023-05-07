@@ -19,5 +19,9 @@ uchar test_bfs();
 
 uchar test_dfs();
 
+uchar test_hamm();
+
+uchar test_manh();
+
 
 #endif // TESTS_H_INCLUDED

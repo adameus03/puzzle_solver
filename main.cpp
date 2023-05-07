@@ -11,5 +11,9 @@ int main()
 
     checker(test_dfs(), "dfs");
 
+    checker(test_hamm(), "hamm");
+
+    checker(test_manh(), "manh");
+
     return 0;
 }

@@ -3,6 +3,7 @@
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
+typedef unsigned long long ull;
 
 void checker(const uchar& ok, const char* description){
     std::cout << '[' << (ok?"OK":"!!") << "]  " << description << std::endl;
@@ -302,4 +303,68 @@ uchar test_dfs(){ return 0x1;
 
     return retval;
 }
+//ull hamm(uint* buffer, const uint& a, const uint& b);
+uchar test_hamm(){
+    uint* buffer = new uint[0x13];
+    *buffer = 0xffffffff;
+    *(buffer+0x1) = 0xffffffff;
+    *(buffer+0x2) = 0xffffffff;
+    *(buffer+0x3) = 0xffffffff;
+    *(buffer+0x4) = 0x1;
+    *(buffer+0x5) = 0x2;
+    *(buffer+0x6) = 0x3;
+    *(buffer+0x7) = 0xffffffff;
+    *(buffer+0x8) = 0x4;
+    *(buffer+0x9) = 0x5;
+    *(buffer+0xa) = 0x6;
+    *(buffer+0xb) = 0xffffffff;
+    *(buffer+0xc) = 0x7;
+    *(buffer+0xd) = 0x0;
+    *(buffer+0xe) = 0x8;
+    *(buffer+0xf) = 0xffffffff;
+    *(buffer+0x10) = 0xffffffff;
+    *(buffer+0x11) = 0xffffffff;
+    *(buffer+0x12) = 0xffffffff;
 
+    ull mtc = hamm(buffer, 0x3, 0x3);
+    uchar retval = 0x1;
+    if(mtc != 0x1) retval = 0x0;
+
+    std::cout << "HAMM=" << mtc << std::endl;
+
+    delete[] buffer;
+    return retval;
+}
+
+//ull manh(uint* buffer, const uint& a, const uint& b);
+uchar test_manh(){
+    uint* buffer = new uint[0x13];
+    *buffer = 0xffffffff;
+    *(buffer+0x1) = 0xffffffff;
+    *(buffer+0x2) = 0xffffffff;
+    *(buffer+0x3) = 0xffffffff;
+    *(buffer+0x4) = 0x1;
+    *(buffer+0x5) = 0x2;
+    *(buffer+0x6) = 0x3;
+    *(buffer+0x7) = 0xffffffff;
+    *(buffer+0x8) = 0x4;
+    *(buffer+0x9) = 0x5;
+    *(buffer+0xa) = 0x6;
+    *(buffer+0xb) = 0xffffffff;
+    *(buffer+0xc) = 0x7;
+    *(buffer+0xd) = 0x0;
+    *(buffer+0xe) = 0x8;
+    *(buffer+0xf) = 0xffffffff;
+    *(buffer+0x10) = 0xffffffff;
+    *(buffer+0x11) = 0xffffffff;
+    *(buffer+0x12) = 0xffffffff;
+
+    ull mtc = manh(buffer, 0x3, 0x3);
+    uchar retval = 0x1;
+    if(mtc != 0x1) retval = 0x0;
+
+    std::cout << "MANH=" << mtc << std::endl;
+
+    delete[] buffer;
+    return retval;
+}

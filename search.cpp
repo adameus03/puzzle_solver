@@ -396,15 +396,70 @@ struct astr_node {
     PUZZLEDIR* direction;
 };
 
-/*ull hamm(uint* buffer, const uint& a, const uint& b){
+ull hamm(uint* buffer, const uint& a, const uint& b){
     uint output = 0x0;
-    for(uint i=0x0; i<a*b; i++){
-        if(*buffer) output += (*buffer != i+1);
+    size_t sup = a*(b+0x1);
+    buffer += (b+0x1);
+    size_t k = 0x1;
+    for(size_t i=0x2; i<sup; i++){
+        if((*buffer) == 0xffffffff){
+            buffer++;
+            continue;
+        }
+        output += (*buffer != k++);
         buffer++;
     }
-    return output-a-0x1;
+    return output;
+}
+
+/*ull umanh(uint pos, uint val, const uint& a, const uint& b){
+    uint posx = pos%b;
+    uint posy = pos/b;
+    uint valx = val%b;
+    uint valy = val/b;
 }*/
 
-PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length, METRIC metric){
+ull manh(uint* buffer, const uint& a, const uint& b){
+    ull output = 0x0;
+    size_t sup = a*(b+0x1);
+    buffer += (b+0x1);
+    size_t k = 0x0;
+    uint posx, posy, valx, valy;
+    for(size_t i=0x1; i<sup; i++){
+        if(((*buffer)==0xffffffff)){
+            buffer++;
+            continue;
+        }
+        if(!*buffer){
+            buffer++;
+            k++;
+            continue;
+        }
+        //output += (*buffer != k++);
+        posx = k%b;
+        valx = ((*buffer)-0x1)%b;
+        posy = k/b;
+        valy = ((*buffer)-0x1)/b;
 
+        if(posx>valx){
+            output += (posx-valx);
+        }
+        else {
+            output += (valx-posx);
+        }
+        if(posy>valy){
+            output += (posy-valy);
+        }
+        else {
+            output += (valy-posy);
+        }
+
+        k++;
+        buffer++;
+    }
+    return output;
+}
+
+PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length, METRIC metric){
+    return NULL;
 }
