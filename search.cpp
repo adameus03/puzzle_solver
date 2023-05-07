@@ -391,9 +391,16 @@ PUZZLEDIR* dfs(uint* buffer, const uint& a, const uint& b, uint& output_length, 
 
 }
 
-struct astr_node {
+/*struct astr_node {
     astr_node* origin = NULL;
     PUZZLEDIR* direction;
+};*/
+
+struct astr_node {
+    small_node* origin = NULL;
+    PUZZLEDIR* direction;
+    uchar op = 0x0;
+    PUZZLEDIR* order;
 };
 
 ull hamm(uint* buffer, const uint& a, const uint& b){
@@ -460,6 +467,161 @@ ull manh(uint* buffer, const uint& a, const uint& b){
     return output;
 }
 
-PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length, METRIC metric){
-    return NULL;
+PUZZLEDIR* astr(uint* buffer, const uint& a, const uint& b, uint& output_length, METRIC metric, const uint& max_depth){
+    /*astr_node root;
+
+    return NULL;*/
+
+    if(final_predicate(buffer, a, b)){
+        output_length = 0x0;
+        return NULL;
+    }
+    //uint* bh = buffer;
+    size_t bl = (a+0x2)*(b+0x1);
+    size_t bls = bl*sizeof(uint);
+    //uint* bt = buffer+bl;
+
+
+    astr_node root;
+    /* CHANGES */
+
+    PUZZLEDIR* dirs = new PUZZLEDIR[0x4];
+    PUZZLEDIR* dirsh;
+    PUZZLEDIR* dirst = dirs+0x4;
+    *dirs = PUZZLEDIR::LEFT;
+    *(dirs+0x1) = PUZZLEDIR::DOWN;
+    *(dirs+0x2) = PUZZLEDIR::RIGHT;
+    *(dirs+0x3) = PUZZLEDIR::UP;
+
+    //PUZZLEDIR* ordert = order+0x4;
+
+    std::cout << "  <enhanced_dirs mem alloc>" << std::endl;
+    int* enhanced_dirs = new int[0x4];
+    int* enhanced_dirsh;
+    int* enhanced_dirst = enhanced_dirs+0x4;
+    std::cout << "  </enhanced_dirs mem alloc>" << std::endl;
+    *enhanced_dirs = -1;
+    *(enhanced_dirs+0x1) = b+1;
+    *(enhanced_dirs+0x2) = 1;
+    *(enhanced_dirs+0x3) = -b-1;
+
+    uint depth = 0x0;
+    uint* hole = zero(buffer, bl);
+
+    astr_node* head = &root;
+
+
+    /*//temp buffer for comparing with the actual buffer
+    uint* _buffer = new uint[bl];*/
+
+    std::cout << "  <while(0x1)>" << std::endl;
+    while(0x1){
+        ///std::cout << "      <condition(head->op<0x4)>" << std::endl;
+        if(!(head->op)){ //initialize order according to priority determined by heuristics
+            /*memcpy(_buffer, buffer, bls);*/
+            ull* scores = new ull[0x4];
+            ull* scoresh = scores;
+            ull* scorest = scores+0x4;
+
+            enhanced_dirsh = enhanced_dirs;
+            while(enhanced_dirsh != enhanced_dirst){
+                uint* target = hole + *enhanced_dirsh;
+                if((*target) == 0xffffffff){
+                    *scoresh = 0xffffffffffffffff;
+                }
+                else {
+                    *hole = *target;
+                    *target = 0x0;
+                    uint* temp = hole;
+                    hole = target;
+                    target = temp;
+
+                    *scoresh = metric == METRIC::HAMMING ? hamm(buffer, a, b) : manh(buffer, a, b);
+
+                    *hole = *target;
+                    *target = 0x0;
+                    hole = target;
+                }
+
+                enhanced_dirsh++;
+                scoresh++;
+            }
+            // min
+            ull* minscore = scores;
+            scoresh = scores+0x1;
+            while(scoresh != scorest){
+                if(*scoresh < *minscore){
+                    minscore = scoresh;
+                }
+                scoresh++;
+            }
+
+        }
+        if(head->op < 0x4){ //branch (if possible)
+            uint* target = hole + *(enhanced_order+(head->op));
+            if(*target == 0xffffffff){
+                (head->op)++;
+                continue;
+            }
+            //std::cout << "BRANCH" << std::endl;
+            //update buffer, depth and hole
+            *hole = *target;
+            *target = 0x0;
+            hole = target;
+            depth++;
+
+            //configure new node
+            small_node* new_node = new small_node;
+            new_node->origin = head;
+            new_node->direction = order+(head->op);
+
+            (head->op)++;
+
+            head = new_node;
+
+            //check depth, check final_predicate
+            if(depth >= max_depth){
+                head->op = 0x4;
+            }
+            if(final_predicate(buffer, a, b)){
+                //do stuff
+                break;
+            }
+        }
+        else {
+            //std::cout << "RETURN" << std::endl;
+            // go to origin after undo move
+            if(head->origin){
+                //update buffer, depth and hole
+                uint* target = hole - *(enhanced_order+((head->direction)-order));
+                *hole = *target;
+                *target = 0x0;
+                hole = target;
+                depth--;
+
+                // return to origin
+                head = head->origin;
+            }
+            else { // solution not found
+                output_length = 0x0;
+                return NULL;
+            }
+        }
+        ///std::cout << "      </condition(head->op<0x4)>" << std::endl;
+    }
+    std::cout << "  </while(0x1)>" << std::endl;
+
+    PUZZLEDIR* sol = new PUZZLEDIR[depth];
+    PUZZLEDIR* solh = sol+depth-0x1;
+    PUZZLEDIR* solt = sol-0x1;
+
+    while(solh != solt){
+        *solh-- = *(head->direction);
+        head = head->origin;
+    }
+
+    output_length = depth;
+
+
+    return sol;
 }
